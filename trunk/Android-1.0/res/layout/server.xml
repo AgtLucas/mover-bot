@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    <SurfaceView 
+        android:id="@+id/preview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        android:layout_centerInParent="true"
+        />>
+    <View
+        android:id="@+id/strut"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_centerInParent="true" />
+
+    <View
+        android:id="@+id/strut2"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_toLeftOf="@+id/StatusBox" />
+
+    <View
+        android:id="@+id/strut3"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_alignParentTop="true" />
+
+    <LinearLayout
+        android:id="@+id/ControlBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/strut"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/strut3"
+        android:layout_toLeftOf="@+id/strut2"
+        android:background="@drawable/status_border"
+        android:orientation="vertical"
+        android:padding="5sp" >
+
+        <Button
+            android:id="@+id/killswitch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:onClick="killSwitch"
+            android:padding="10sp"
+            android:text="KILLSWITCH" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle Streaming: "
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ToggleButton
+                android:id="@+id/toggle_network"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ToggleButton" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle USB: "
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <ToggleButton
+                android:id="@+id/toggle_usb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ToggleButton" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/StatusBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/strut"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/strut3"
+        android:background="@drawable/status_border"
+        android:orientation="vertical"
+        android:padding="5sp" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ConsoleBox"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/strut"
+        android:background="@drawable/status_border"
+        android:orientation="vertical"
+        android:padding="5sp" >
+
+        <ScrollView
+            android:id="@+id/ConsoleScroll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:scrollbars="vertical" >
+
+            <TextView
+                android:id="@+id/ConsoleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5sp"
+                android:paddingRight="5sp" />
+        </ScrollView>
+    </LinearLayout>
+
+</RelativeLayout>
