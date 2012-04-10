@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <View
+        android:id="@+id/strut0"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_alignParentTop="true" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/strut0"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/VideoBox"
+            android:layout_width="400dp"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/status_border"
+            android:orientation="vertical"
+            android:padding="5sp" >
+
+            <ImageView
+                android:id="@+id/frame"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="5sp" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/strut"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_toLeftOf="@+id/VideoBox" />
+
+        <RelativeLayout
+            android:id="@+id/MapBox"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/strut2"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/strut"
+            android:layout_toRightOf="@+id/strut3"
+            android:background="@drawable/status_border"
+            android:padding="5sp" >
+
+            <com.google.android.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:apiKey="000000000000000000000000000000000000000" />
+
+            <ImageView
+                android:id="@+id/mapArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/mapdot" />
+
+            <TextView
+                android:id="@+id/AccelText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/MagText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/AccelText"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="13sp" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/strut2"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_centerInParent="true" />
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/strut2"
+            android:layout_toLeftOf="@+id/strut"
+            android:layout_toRightOf="@+id/strut3"
+            android:background="@drawable/status_border"
+            android:orientation="vertical"
+            android:padding="5sp" >
+
+            <LinearLayout
+                android:id="@+id/StatusBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical"
+                android:padding="5sp" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ControlBox"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_above="@+id/ConsoleBox"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/StatusBox"
+                android:orientation="vertical"
+                android:padding="5sp" >
+
+                <Button
+                    android:id="@+id/drivebutton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:padding="10sp"
+                    android:text="Toggle Motors" />
+
+                <Button
+                    android:id="@+id/lightbutton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:padding="10sp"
+                    android:text="Toggle Lights" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ConsoleBox"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/StatusBox"
+                android:orientation="vertical"
+                android:padding="5sp" >
+
+                <ScrollView
+                    android:id="@+id/ConsoleScroll"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:fillViewport="true"
+                    android:scrollbars="vertical" >
+
+                    <TextView
+                        android:id="@+id/ConsoleText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5sp"
+                        android:paddingRight="5sp" />
+                </ScrollView>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/strut3"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_toRightOf="@+id/TouchpadBox" />
+
+        <RelativeLayout
+            android:id="@+id/TouchpadBox"
+            android:layout_width="250dp"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/status_border"
+            android:padding="5sp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/dpad_small" />
+
+            <ImageView
+                android:id="@+id/touchpad"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#00000000" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
