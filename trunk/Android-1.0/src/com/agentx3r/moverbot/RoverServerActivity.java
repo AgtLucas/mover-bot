@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) 2012 Paul Bovbel, paul@bovbel.com
+ * 
+ * This file is part of the Mover-Bot robot platform (http://code.google.com/p/mover-bot/)
+ * 
+ * Mover-Bot is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this source code. If not, see http://www.gnu.org/licenses/
+ */
+
 package com.agentx3r.moverbot;
 
 import java.io.BufferedOutputStream;
@@ -562,17 +581,15 @@ public class RoverServerActivity extends Activity {
 				camera.setParameters(params);
 			}
 			camera.setPreviewCallback(new PreviewCallback() {
-				//				int frame_num = 0;
 				long timeout = SystemClock.uptimeMillis();
 				final long delay = 100;
 
 				public void onPreviewFrame(final byte[] data, Camera arg1) {
-					//					
+			
 					if (SystemClock.uptimeMillis() > timeout && streaming.enabled && remoteConnection.connected){						
 						imageSender.post(new Runnable(){
 							public void run(){
 								try {
-									//									frame_num++;
 									YuvImage frame = new YuvImage(data, ImageFormat.NV21, w, h, null);																		
 									frame.compressToJpeg(new Rect(0, 0, w, h), 80,output);
 									output.flush();
@@ -635,5 +652,4 @@ public class RoverServerActivity extends Activity {
 			}
 		});
 	}
-
 }
