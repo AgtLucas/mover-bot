@@ -73,7 +73,7 @@ public abstract class RemoteControl extends Thread{
 
 	protected RemoteControl(int port, Handler ui){
 
-		//Server setup: Load in target IP
+		//Server setup: Load in listening port
 		super("RCServer");
 		isServer = true;
 		this.setDaemon(true);
