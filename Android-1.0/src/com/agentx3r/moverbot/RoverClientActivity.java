@@ -141,9 +141,6 @@ public class RoverClientActivity extends MapActivity {
 		mapController = mapView.getController();
 		mapController.setCenter(new GeoPoint(43642644, -79387100));
 		mapController.setZoom(19);
-		//		locationOverlay = new MyLocationOverlay(this, mapView);
-		//		mapView.getOverlays().add(locationOverlay);
-		//		mapView.postInvalidate();
 		arrow = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.mapdot);
 		map_arrow = (ImageView)findViewById(R.id.mapArrow);
 
@@ -442,20 +439,16 @@ public class RoverClientActivity extends MapActivity {
 
 	}
 
-
-
 	void startVideo(){
 
 		try{
 			final ImageView frame=(ImageView)findViewById(R.id.frame);
-
 			Thread imageThread = new Thread(new Runnable(){
 				public void run(){
 					try{
 						console("Listening for video\n");
 						BufferedInputStream input = new BufferedInputStream(remoteConnection.imageSocket.getInputStream());
 						byte[] buffer = new byte[512000];	
-						//						int frame_num = 0;
 						while(remoteConnection.connected){
 							int i = 0;							
 							boolean capture = false;						
@@ -496,7 +489,6 @@ public class RoverClientActivity extends MapActivity {
 												console("failed to decode\n");
 											}
 											capture = true;
-											//											frame_num++;
 										}
 
 									}
