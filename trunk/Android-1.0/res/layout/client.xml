@@ -54,8 +54,12 @@
                 android:id="@+id/mapView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:apiKey="000000000000000000000000000000000000000" />
+                android:apiKey="0vIGSwW4JXoVVE1cDqvVbzLivEmF_4qxE0L209A" />
 
+            <!-- publish android:apiKey="0vIGSwW4JXoVVE1cDqvVbzLivEmF_4qxE0L209A" -->
+            <!-- school android:apiKey="0vIGSwW4JXoWeUyL6f_GcT-Za_8yJiuJRTfhXtA" -->
+            <!-- home android:apiKey="0vIGSwW4JXoXuuznpY2m49e7MI86ktiOaUBkcAw" -->
+            
             <ImageView
                 android:id="@+id/mapArrow"
                 android:layout_width="wrap_content"

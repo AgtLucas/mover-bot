@@ -17,7 +17,6 @@
  * along with this source code. If not, see http://www.gnu.org/licenses/
  */
 
-
 package com.agentx3r.lib;
 
 import java.io.BufferedReader;
@@ -54,7 +53,6 @@ public abstract class RemoteControl extends Thread{
 
 	ServerSocket imageServerSocket;
 	public Socket imageSocket;
-
 
 	BufferedReader input;
 	BufferedWriter output;
