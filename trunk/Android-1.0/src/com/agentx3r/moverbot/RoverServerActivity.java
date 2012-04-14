@@ -494,7 +494,7 @@ public class RoverServerActivity extends Activity {
 		@Override
 		public void onReceive(String[] msg) {
 			
-			console(msg[0] + msg[1] + "\n");
+			//console(msg[0] + msg[1] + "\n");
 			
 			if(msg[0].equals("speed")){
 				if(usbConnection != null){
