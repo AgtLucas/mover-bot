@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import android.content.Context;
 import android.location.Location;
 import android.net.wifi.WifiManager;
+import android.provider.Settings;
 import android.text.format.Formatter;
 import android.util.Log;
 
@@ -38,6 +39,26 @@ public class Util {
 
 	final static String TAG = "util";
 
+	private static int defTimeOut = 0;
+	private static final int SHORT_DELAY = 30000; //30 second screen timeout
+	private static final int LONG_DELAY = 300000; //5 minute screen timeout
+
+	public static void setScreenAlwaysOn(Context context){
+		//Screen timeout
+		defTimeOut = Settings.System.getInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, SHORT_DELAY);
+		if(defTimeOut == LONG_DELAY){
+			defTimeOut = SHORT_DELAY;			
+		}
+		Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, LONG_DELAY);	
+	}
+
+	public static void restoreScreenTimeout(Context context){
+
+		//Screen Timeout
+		Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, defTimeOut);
+	}
+	
+	
 	/** check if string is valid ipv4 */
 	public static boolean validIP(String ip) {
 		if (ip == null || ip.isEmpty()) return false;

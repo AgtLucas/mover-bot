@@ -102,10 +102,6 @@ public class RoverClientActivity extends MapActivity {
 	private Handler UIHandler = new Handler();
 	private Dialog popup;
 
-	//Screen timeout
-	int defTimeOut = 0;
-	private static final int DELAY = 3600000; //6 minute screen timeout
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -116,9 +112,14 @@ public class RoverClientActivity extends MapActivity {
 
 	}
 
+	public void onResume(){
+		super.onResume();
+		Util.setScreenAlwaysOn(getApplicationContext());
+	}
+	
 	public void onPause() {	
 		super.onPause();
-
+		Util.restoreScreenTimeout(getApplicationContext());
 	}
 
 	public void onDestroy() {	
@@ -128,9 +129,8 @@ public class RoverClientActivity extends MapActivity {
 		}catch(Exception e){
 			console("Error shutting down connection\n");
 		}
-		Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, defTimeOut);
-	}
 
+	}
 
 
 	//------UI
@@ -159,10 +159,6 @@ public class RoverClientActivity extends MapActivity {
 			}
 		});
 
-		//Screen timeout
-		defTimeOut = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, DELAY);
-		Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, DELAY);
-
 		final ImageView touchpad = (ImageView)findViewById(R.id.touchpad);
 
 		touchpad.post(new Runnable() {   //get size after touchpad drawn
@@ -175,14 +171,30 @@ public class RoverClientActivity extends MapActivity {
 		touchpad.setOnTouchListener(new View.OnTouchListener() {
 
 			long timeout = SystemClock.uptimeMillis();
-			final long delay = 10;
+			final long delay = 25;
 
 			public boolean onTouch(View v, MotionEvent event) {
 
-				int y = 0;
-				int x = 0;
+				Integer x = 0;
+				Integer y = 0;
+											
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					//Measure touch
+					y =  (touch_height-(int)event.getY())*(100+reverse_percent)/touch_height-reverse_percent;
+					x = ((int)event.getX()-touch_width/2)*100/touch_width*2;
+					//Deadzone
+					if (Math.abs(y) < dead_zone){
+						y = 0;
+					}
+					//send data
+					if (remoteConnection != null && remoteConnection.connected){					
+						remoteConnection.send("speed="+y+";turn="+x/turn_sensitivity);				
+						//remoteConnection.send("speed="+y+";turn="+x/turn_sensitivity);	
+						//remoteConnection.send("speed="+y+";turn="+x/turn_sensitivity);	
+					}
+					break;
+					
 				case MotionEvent.ACTION_MOVE:
 					//Measure touch
 					y =  (touch_height-(int)event.getY())*(100+reverse_percent)/touch_height-reverse_percent;
@@ -199,12 +211,14 @@ public class RoverClientActivity extends MapActivity {
 						timeout = SystemClock.uptimeMillis() + delay;
 					}
 					break;
+					
+					
 				case MotionEvent.ACTION_UP:
 					//send data
 					if (remoteConnection != null && remoteConnection.connected){					
 						remoteConnection.send("speed="+y+";turn="+x/turn_sensitivity);				
-						remoteConnection.send("speed="+y+";turn="+x/turn_sensitivity);	
-						remoteConnection.send("speed="+y+";turn="+x/turn_sensitivity);	
+						//remoteConnection.send("speed="+y+";turn="+x/turn_sensitivity);	
+						//remoteConnection.send("speed="+y+";turn="+x/turn_sensitivity);	
 					}
 					break;
 				}
