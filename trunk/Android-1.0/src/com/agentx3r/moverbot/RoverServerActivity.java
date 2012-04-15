@@ -72,12 +72,12 @@ import android.hardware.Camera.Parameters;
 public class RoverServerActivity extends Activity {
 
 	private static final String TAG = "RoverServer";
-	
+
 	//Handler, Threads
 	private Handler UIHandler = new Handler();
 	private RemoteControlServer remoteConnection;
 	private USBControlServer usbConnection;
-	
+
 	//Video
 	SurfaceView preview;
 	SurfaceHolder previewHolder;
@@ -101,8 +101,6 @@ public class RoverServerActivity extends Activity {
 	ToggleButton toggle_network;
 	ToggleButton toggle_usb;
 	ScrollView console_scroll;
-	int defTimeOut = 0;
-	private static final int DELAY = 3600000; //6 minute screen timeout
 
 	//Protocol Messages
 	final static byte SYNC = 's';
@@ -142,6 +140,7 @@ public class RoverServerActivity extends Activity {
 		super.onResume();
 
 		resumeSensors();
+		Util.setScreenAlwaysOn(getApplicationContext());
 	}
 
 	@Override
@@ -149,6 +148,7 @@ public class RoverServerActivity extends Activity {
 		super.onPause();
 
 		pauseSensors();
+		Util.restoreScreenTimeout(getApplicationContext());
 	}
 
 	@Override
@@ -158,76 +158,70 @@ public class RoverServerActivity extends Activity {
 		closeNetwork();
 		closeUSB();
 
-		//Screen Timeout
-		Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, defTimeOut);
-
-				System.runFinalizersOnExit(true);
-				System.exit(0);
+		System.runFinalizersOnExit(true);
+		System.exit(0);
 	}
 
+
 	//UI Methods
-		private void setupUI(){
+	private void setupUI(){
 
-			//Screen timeout
-			defTimeOut = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, DELAY);
-			Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, DELAY);
+		//Tasks
+		status_box = (LinearLayout)findViewById(R.id.StatusBox);
+		network = new Task("Network");
+		usb = new Task("USB");		
+		motors = new Task("Motors");
+		streaming = new Task("Video");
+		light = new Task("Light");
+		accel = new Task("Accel");
+		mag = new Task("Mag");		
+		gps = new Task("GPS");
+		battery = new Task("Battery");
+		battery.led.setImageResource(R.drawable.stat_sys_battery_0);
+		console = (TextView)findViewById(R.id.ConsoleText);
+		console_scroll= (ScrollView)findViewById(R.id.ConsoleScroll);
+		killswitch = (Button)findViewById(R.id.killswitch);
+		killswitch.setOnClickListener(new Button.OnClickListener()
+		{
+			public void onClick(View arg0) {
+				usbConnection.driveEnabled(false);
+			}
 
-			//Tasks
-			status_box = (LinearLayout)findViewById(R.id.StatusBox);
-			network = new Task("Network");
-			usb = new Task("USB");		
-			motors = new Task("Motors");
-			streaming = new Task("Video");
-			light = new Task("Light");
-			accel = new Task("Accel");
-			mag = new Task("Mag");		
-			gps = new Task("GPS");
-			battery = new Task("Battery");
-			battery.led.setImageResource(R.drawable.stat_sys_battery_0);
-			console = (TextView)findViewById(R.id.ConsoleText);
-			console_scroll= (ScrollView)findViewById(R.id.ConsoleScroll);
-			killswitch = (Button)findViewById(R.id.killswitch);
-			killswitch.setOnClickListener(new Button.OnClickListener()
-			{
-				public void onClick(View arg0) {
-					usbConnection.driveEnabled(false);
-				}
+		});
 
-			});
+		ToggleButton toggle_streaming= (ToggleButton)findViewById(R.id.toggle_network);
+		toggle_streaming.setChecked(false);
+		toggle_streaming.setOnCheckedChangeListener(new ToggleButton.OnCheckedChangeListener(){
 
-			ToggleButton toggle_streaming= (ToggleButton)findViewById(R.id.toggle_network);
-			toggle_streaming.setChecked(false);
-			toggle_streaming.setOnCheckedChangeListener(new ToggleButton.OnCheckedChangeListener(){
-
-				public void onCheckedChanged(CompoundButton toggle_network,	boolean isChecked) {
-					if(remoteConnection.connected == true){				
-						if(isChecked){
-							streaming.enable();
-						}else{
-							streaming.disable();
-						}
+			public void onCheckedChanged(CompoundButton toggle_network,	boolean isChecked) {
+				if(remoteConnection.connected == true){				
+					if(isChecked){
+						streaming.enable();
 					}else{
-						console("Not connected!\n");
 						streaming.disable();
 					}
+				}else{
+					console("Not connected!\n");
+					streaming.disable();
 				}
-			});
+			}
+		});
 
-			ToggleButton toggle_usb= (ToggleButton)findViewById(R.id.toggle_usb);
-			toggle_usb.setChecked(true);
-			toggle_usb.setEnabled(false);
+		ToggleButton toggle_usb= (ToggleButton)findViewById(R.id.toggle_usb);
+		toggle_usb.setChecked(true);
+		toggle_usb.setEnabled(false);
 
-		}
+	}
 
-		private class Task extends TaskTemplate{
+	private class Task extends TaskTemplate{
 
-			Task(String name) {super(name);}
-			@Override
-			public Activity getActivity() {	return RoverServerActivity.this;}
-			@Override
-			public ViewGroup getHolder() {return status_box;}
-		}
-	
+		Task(String name) {super(name);}
+		@Override
+		public Activity getActivity() {	return RoverServerActivity.this;}
+		@Override
+		public ViewGroup getHolder() {return status_box;}
+	}
+
 	//Sensor Methods
 	private void setupSensors(){
 
@@ -262,7 +256,7 @@ public class RoverServerActivity extends Activity {
 		mSensorManager.registerListener(magSensorListener, magSensor, SensorManager.SENSOR_DELAY_NORMAL);
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsListener);
 		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, gpsListener);
-		
+
 		console("Starting All Sensors...");
 		console("Done\n");
 	}
@@ -280,7 +274,7 @@ public class RoverServerActivity extends Activity {
 
 		console("Done\n");
 	}
-	
+
 	//Sensor Listeners
 	private SensorEventListener accSensorListener=new SensorEventListener()
 	{
@@ -493,10 +487,11 @@ public class RoverServerActivity extends Activity {
 
 		@Override
 		public void onReceive(String[] msg) {
-			
-			//console(msg[0] + msg[1] + "\n");
-			
+
+			//console(".");
+
 			if(msg[0].equals("speed")){
+				//speed update
 				if(usbConnection != null){
 					usbConnection.setSpeed(Integer.parseInt(msg[1]));
 				}
@@ -585,7 +580,7 @@ public class RoverServerActivity extends Activity {
 				final long delay = 100;
 
 				public void onPreviewFrame(final byte[] data, Camera arg1) {
-			
+
 					if (SystemClock.uptimeMillis() > timeout && streaming.enabled && remoteConnection.connected){						
 						imageSender.post(new Runnable(){
 							public void run(){
