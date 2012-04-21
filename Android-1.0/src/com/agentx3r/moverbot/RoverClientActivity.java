@@ -25,7 +25,6 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-//import com.google.android.maps.MyLocationOverlay;
 
 import com.agentx3r.lib.RemoteControl;
 import com.agentx3r.lib.TaskTemplate;
@@ -39,7 +38,6 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -106,7 +104,7 @@ public class RoverClientActivity extends MapActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.client);
-
+		
 		//UI setup
 		setupUI();
 
@@ -114,12 +112,12 @@ public class RoverClientActivity extends MapActivity {
 
 	public void onResume(){
 		super.onResume();
-		Util.setScreenAlwaysOn(getApplicationContext());
+		Util.setWakeLock(getApplicationContext());
 	}
 	
 	public void onPause() {	
 		super.onPause();
-		Util.restoreScreenTimeout(getApplicationContext());
+		Util.releaseWakeLock();
 	}
 
 	public void onDestroy() {	
@@ -267,9 +265,9 @@ public class RoverClientActivity extends MapActivity {
 
 		Task(String name) { super(name); }
 		@Override
-		public Activity getActivity() { return RoverClientActivity.this; }
+		public Activity setActivity() { return RoverClientActivity.this; }
 		@Override
-		public ViewGroup getHolder() { return status_box; }
+		public ViewGroup setHolder() { return status_box; }
 	}
 
 	//-------OPTIONS

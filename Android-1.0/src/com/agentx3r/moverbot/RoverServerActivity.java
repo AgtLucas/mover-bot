@@ -37,7 +37,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -115,7 +114,9 @@ public class RoverServerActivity extends Activity {
 	//Sensors
 	private SensorManager mSensorManager;
 	private Sensor accSensor;
+	private final static int accDelay = 50; //ms between readings
 	private Sensor magSensor;
+	private final static int magDelay = 500; //ms between readings
 	LocationManager mLocationManager;
 	LocationProvider locationProvider;
 
@@ -140,7 +141,7 @@ public class RoverServerActivity extends Activity {
 		super.onResume();
 
 		resumeSensors();
-		Util.setScreenAlwaysOn(getApplicationContext());
+		Util.setWakeLock(getApplicationContext());
 	}
 
 	@Override
@@ -148,7 +149,7 @@ public class RoverServerActivity extends Activity {
 		super.onPause();
 
 		pauseSensors();
-		Util.restoreScreenTimeout(getApplicationContext());
+		Util.releaseWakeLock();
 	}
 
 	@Override
@@ -217,9 +218,9 @@ public class RoverServerActivity extends Activity {
 
 		Task(String name) {super(name);}
 		@Override
-		public Activity getActivity() {	return RoverServerActivity.this;}
+		public Activity setActivity() {	return RoverServerActivity.this;}
 		@Override
-		public ViewGroup getHolder() {return status_box;}
+		public ViewGroup setHolder() {return status_box;}
 	}
 
 	//Sensor Methods
@@ -252,8 +253,8 @@ public class RoverServerActivity extends Activity {
 	}
 	private void resumeSensors(){
 
-		mSensorManager.registerListener(accSensorListener, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
-		mSensorManager.registerListener(magSensorListener, magSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		mSensorManager.registerListener(accSensorListener, accSensor, accDelay * 1000);
+		mSensorManager.registerListener(magSensorListener, magSensor, magDelay * 1000);
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, gpsListener);
 		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, gpsListener);
 
@@ -279,8 +280,7 @@ public class RoverServerActivity extends Activity {
 	private SensorEventListener accSensorListener=new SensorEventListener()
 	{
 		long timeout = SystemClock.uptimeMillis();
-		final long delay = 50;
-
+		
 		public void onSensorChanged(SensorEvent event)
 		{   
 			accel.enable();
@@ -291,7 +291,8 @@ public class RoverServerActivity extends Activity {
 					remoteConnection.send("acc=" + event.values[0] + "," + event.values[1] + "," + event.values[2]);
 				}
 
-				timeout = SystemClock.uptimeMillis() + delay;
+				//in case registerListener rate doesn't behave
+				timeout = SystemClock.uptimeMillis() + accDelay * 3/4;
 
 			}
 		}
@@ -301,7 +302,6 @@ public class RoverServerActivity extends Activity {
 	private SensorEventListener magSensorListener=new SensorEventListener()
 	{
 		long timeout = SystemClock.uptimeMillis();
-		final long delay = 500;
 
 		public void onSensorChanged(SensorEvent event)
 		{   
@@ -309,12 +309,12 @@ public class RoverServerActivity extends Activity {
 
 			if(SystemClock.uptimeMillis() > timeout){
 
-				//console("mag=" + event.values[0] +"\n");
 				if(remoteConnection != null && remoteConnection.connected){					
 					remoteConnection.send("mag=" + event.values[0] +"\n");
 				}
 
-				timeout = SystemClock.uptimeMillis() + delay;
+				//in case registerListener rate doesn't behave
+				timeout = SystemClock.uptimeMillis() + magDelay *3/4;
 			}
 		}
 		public void onAccuracyChanged(Sensor sensor, int accuracy) {}

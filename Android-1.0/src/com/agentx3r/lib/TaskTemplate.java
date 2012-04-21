@@ -38,11 +38,11 @@ public abstract class TaskTemplate {
 	public TextView text;
 	public boolean enabled;
 
-	public abstract Activity getActivity();
-	public abstract ViewGroup getHolder();
+	public abstract Activity setActivity();
+	public abstract ViewGroup setHolder();
 	
 	public TaskTemplate(String name){
-		View status_bar = getActivity().getLayoutInflater().inflate(R.layout.status_bar, null);
+		View status_bar = setActivity().getLayoutInflater().inflate(R.layout.status_bar, null);
 		text = (TextView) status_bar.findViewById(R.id.text);
 		text.setText(name +":");
 
@@ -50,7 +50,7 @@ public abstract class TaskTemplate {
 		this.disable();
 		enabled = false;
 
-		getHolder().addView(status_bar);
+		setHolder().addView(status_bar);
 	}
 
 	public void enable(){
