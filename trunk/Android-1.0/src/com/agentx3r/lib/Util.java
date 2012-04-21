@@ -24,12 +24,14 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import android.content.Context;
 import android.location.Location;
 import android.net.wifi.WifiManager;
-import android.provider.Settings;
+import android.os.PowerManager;
 import android.text.format.Formatter;
 import android.util.Log;
+
 
 /** Utility Class for all kinds of stuff!
  * 
@@ -39,26 +41,24 @@ public class Util {
 
 	final static String TAG = "util";
 
-	private static int defTimeOut = 0;
-	private static final int SHORT_DELAY = 30000; //30 second screen timeout
-	private static final int LONG_DELAY = 300000; //5 minute screen timeout
+	private static PowerManager.WakeLock wl;
 
-	public static void setScreenAlwaysOn(Context context){
-		//Screen timeout
-		defTimeOut = Settings.System.getInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, SHORT_DELAY);
-		if(defTimeOut == LONG_DELAY){
-			defTimeOut = SHORT_DELAY;			
+	public static void setWakeLock(Context context){
+
+		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
+		wl.acquire();
+	}
+
+	public static void releaseWakeLock(){
+
+		if(wl != null && wl.isHeld()){
+			wl.release();			
 		}
-		Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, LONG_DELAY);	
+		wl = null;
+
 	}
 
-	public static void restoreScreenTimeout(Context context){
-
-		//Screen Timeout
-		Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, defTimeOut);
-	}
-	
-	
 	/** check if string is valid ipv4 */
 	public static boolean validIP(String ip) {
 		if (ip == null || ip.isEmpty()) return false;
@@ -91,7 +91,7 @@ public class Util {
 
 	}
 
-	/** get ip of the gateway this device is connected to (useful if gateway has server running) */
+	/** get IP of the gateway this device is connected to (useful if gateway has server running) */
 	public static String getHostIpAddress(Context mContext){
 
 		WifiManager wifi= (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
@@ -107,7 +107,7 @@ public class Util {
 	 * @param location  The new Location that you want to evaluate
 	 * @param currentBestLocation  The current Location fix, to which you want to compare the new one
 	 */
-	
+
 	public static boolean isBetterLocation(Location location, Location currentBestLocation) {
 		if (currentBestLocation == null) {
 			// A new location is always better than no location
@@ -158,6 +158,4 @@ public class Util {
 		return provider1.equals(provider2);
 	}
 
-	
-	
 }

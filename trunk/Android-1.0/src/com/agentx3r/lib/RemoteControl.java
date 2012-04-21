@@ -106,13 +106,15 @@ public abstract class RemoteControl extends Thread{
 	public void send(String[] commands){
 		StringBuilder command = new StringBuilder();
 		for (String temp : commands){
-			command.append(temp);
+			command.append(temp + ";");
 		}
 		send(command.toString());
 	}
 
+	//Override to process incoming messages
 	public abstract void onReceive(String[] msg);
 
+	//Override to process debug messages
 	public abstract void onNotify(String msg);
 
 	public abstract void onStart();
@@ -134,7 +136,7 @@ public abstract class RemoteControl extends Thread{
 	}
 
 	//Process messages from rover
-	public void receive(String[] commands){
+	private void receive(String[] commands){
 		for (String command : commands){
 			//check not empty command
 			if (command.matches(".*\\w.*")){
